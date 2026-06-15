@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ocean-50: #f0f9ff;
+  --color-ocean-100: #e0f2fe;
+  --color-ocean-200: #bae6fd;
+  --color-ocean-300: #7dd3fc;
+  --color-ocean-400: #38bdf8;
+  --color-ocean-500: #0ea5e9;
+  --color-ocean-600: #0284c7;
+  --color-ocean-700: #0369a1;
+  --color-ocean-800: #075985;
+  --color-ocean-900: #0c4a6e;
+  --color-ocean-950: #082f49;
+
+  --color-sand-50: #fafaf6;
+  --color-sand-100: #f5f4e8;
+  --color-sand-200: #ebe7c5;
+  --color-sand-300: #dbd498;
+  --color-sand-400: #c7b96c;
+  --color-sand-500: #b09e45;
+  --color-sand-600: #948133;
+  --color-sand-700: #756428;
+  --color-sand-800: #5a4d21;
+  --color-sand-900: #4c401d;
+  --color-sand-950: #2c240e;
+
+  --font-sans: 'Outfit', 'Inter', sans-serif;
+}
+
+/* Premium UI Utilities */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.glass-card-dark {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-gradient-surf {
+  background: linear-gradient(135deg, #0c4a6e 0%, #082f49 100%);
+}
+
+.bg-gradient-mesh {
+  background-color: #f0f9ff;
+  background-image: 
+    radial-gradient(at 10% 20%, rgba(224, 242, 254, 0.6) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(251, 243, 219, 0.6) 0px, transparent 50%),
+    radial-gradient(at 50% 80%, rgba(186, 230, 253, 0.4) 0px, transparent 50%);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.7);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-wave {
+  animation: wave 3s ease-in-out infinite;
+}
