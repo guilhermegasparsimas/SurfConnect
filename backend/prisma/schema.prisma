@@ -32,6 +32,8 @@ model User {
   telefone  String
   classes   Class[]   @relation("InstructorClasses")
   bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Class {
@@ -42,6 +44,8 @@ model Class {
   instructorId Int
   instructor   User      @relation("InstructorClasses", fields: [instructorId], references: [id])
   bookings     Booking[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Booking {
@@ -52,4 +56,6 @@ model Booking {
   class         Class         @relation(fields: [classId], references: [id])
   status        BookingStatus @default(CONFIRMED)
   paymentStatus PaymentStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
