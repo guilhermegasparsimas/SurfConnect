@@ -76,14 +76,14 @@ const LoginRegister = () => {
 
   return (
     <div className="min-h-screen relative flex flex-col justify-center py-12 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Cinematic Surf Background */}
+      {/* Cinematic Surf Background (Synced) */}
       <div className="fixed inset-0 w-full h-full -z-10">
         <img 
-          src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1920&q=80" 
-          alt="Surf Wave Background" 
+          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop" 
+          alt="Surf Background" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-zinc-950/75 backdrop-blur-[6px]"></div>
+        <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px]"></div>
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useScrollDirection } from '../hooks/useScrollDirection';
 import { Waves, LogOut, Check, Calendar, MapPin, Users, RefreshCw, AlertCircle, Phone, CheckCircle, UserCheck } from 'lucide-react';
 
 const InstructorDashboard = () => {
   const { user, logout, apiRequest } = useAuth();
+  const headerVisible = useScrollDirection();
   const [classes, setClasses] = useState([]);
   
   // UI states
@@ -53,10 +55,19 @@ const InstructorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-900 bg-gradient-mesh flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen bg-zinc-900 flex items-center justify-center relative">
+        {/* Background do Loading - Imagem Nítida com overlay suave */}
+        <div className="fixed inset-0 w-full h-full -z-10">
+          <img 
+            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop" 
+            className="w-full h-full object-cover" 
+            alt="Surf Background"
+          />
+          <div className="absolute inset-0 bg-zinc-900/75 backdrop-blur-[1px]"></div>
+        </div>
+        <div className="text-center z-10">
           <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-zinc-400 font-medium">Carregando cronograma de aulas...</p>
+          <p className="text-zinc-300 font-medium">Carregando cronograma de aulas...</p>
         </div>
       </div>
     );
@@ -64,18 +75,20 @@ const InstructorDashboard = () => {
 
   return (
     <div className="min-h-screen relative pb-12 text-zinc-300">
-      {/* Cinematic Surf Background */}
+      {/* Cinematic Surf Background (Synced with Admin) */}
       <div className="fixed inset-0 w-full h-full -z-10">
         <img 
-          src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1920&q=80" 
-          alt="Surf Wave Background" 
+          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop" 
+          alt="Surf Background" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-zinc-950/85 backdrop-blur-[8px]"></div>
+        <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[1px]"></div>
       </div>
 
       {/* Header */}
-      <header className="bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800 sticky top-0 z-10">
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800 ${
+        headerVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-cyan-500 text-zinc-950 rounded-xl shadow-md shadow-cyan-500/10">
@@ -99,7 +112,7 @@ const InstructorDashboard = () => {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8 animate-fade-in">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-24 space-y-8 animate-fade-in relative z-10">
         
         {/* Alerts */}
         {error && (

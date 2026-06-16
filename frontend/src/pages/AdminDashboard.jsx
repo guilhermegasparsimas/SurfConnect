@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useScrollDirection } from '../hooks/useScrollDirection';
 import { Waves, LogOut, Users, Calendar, DollarSign, Plus, RefreshCw, AlertCircle, CheckCircle, MapPin, ClipboardList } from 'lucide-react';
 
 const AdminDashboard = () => {
   const { user, logout, apiRequest } = useAuth();
+  const headerVisible = useScrollDirection();
   
   // Dashboard states
   const [metrics, setMetrics] = useState({ totalStudents: 0, classesToday: 0, totalEarnings: 0 });
@@ -128,7 +130,9 @@ const AdminDashboard = () => {
       </div>
 
       {/* Header - Tom mais suave e integrado */}
-      <header className="bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800 sticky top-0 z-10">
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800 ${
+        headerVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-cyan-500 text-zinc-950 rounded-xl shadow-md shadow-cyan-500/20">
@@ -152,7 +156,7 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8 animate-fade-in relative z-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24 space-y-8 animate-fade-in relative z-10">
         
         {/* Alerts */}
         {error && (
