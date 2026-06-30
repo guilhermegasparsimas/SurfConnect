@@ -1,0 +1,54 @@
+Baseei a descrição no README e nos arquivos principais do repositório. O projeto é apresentado como uma plataforma para gestão de escolas de surf, com frontend em React/Tailwind, backend em Node.js/Express, banco MySQL via Prisma, autenticação JWT e controle de acesso por papéis ADMIN, INSTRUCTOR e STUDENT. ([GitHub][1])
+
+**SurfConnect — Sistema de Gestão para Escolas de Surf**
+
+O **SurfConnect** é uma aplicação web full stack desenvolvida para modernizar a gestão de escolas de surf, centralizando em uma única plataforma o controle de alunos, instrutores, aulas, agendamentos, pagamentos simulados e indicadores administrativos.
+
+A solução foi construída com uma arquitetura cliente-servidor, utilizando **React 19**, **Vite**, **Tailwind CSS** e **React Router** no frontend, garantindo uma interface responsiva, moderna e organizada por perfis de usuário. No backend, o sistema utiliza **Node.js**, **Express**, **Prisma ORM** e **MySQL**, oferecendo uma API REST modularizada, com persistência de dados, autenticação segura via **JWT** e criptografia de senhas com **Bcrypt**.
+
+Um dos principais pontos técnicos do projeto é o uso de **RBAC — Role-Based Access Control**, permitindo experiências diferentes para cada tipo de usuário:
+
+* **Administrador:** gerencia aulas, instrutores, agendamentos e métricas financeiras.
+* **Instrutor:** acompanha suas próprias aulas, visualiza alunos inscritos e confirma presença/pagamento.
+* **Aluno:** consulta aulas disponíveis, realiza agendamentos e acessa informações simuladas de clima e ondas.
+
+O banco de dados foi modelado com entidades principais como **User**, **Class** e **Booking**, permitindo controlar usuários, aulas, limite de vagas, status do agendamento e status de pagamento. O sistema também possui validações de regra de negócio, como impedir agendamentos duplicados e bloquear aulas que já atingiram o limite máximo de alunos.
+
+Além da gestão operacional, o SurfConnect conta com recursos de experiência do usuário, como dashboards por perfil, interface visual com estilo imersivo, rotas protegidas, dados iniciais para demonstração e integrações simuladas com Pix, WhatsApp e previsão de ondas.
+
+Em resumo, o SurfConnect demonstra a construção de uma aplicação web completa, com autenticação, autorização, banco relacional, API REST, frontend moderno e regras de negócio aplicadas a um cenário real de gestão de serviços.
+
+Para um **slide único no Gamma**, eu usaria assim:
+
+**Título:**
+**SurfConnect — Plataforma Full Stack para Escolas de Surf**
+
+**Texto curto:**
+Sistema web para gestão de escolas de surf, permitindo o controle de alunos, instrutores, aulas, agendamentos, presença e pagamentos simulados. A aplicação utiliza frontend moderno em React e Tailwind, backend em Node.js/Express, banco MySQL com Prisma ORM e autenticação JWT com controle de acesso por papéis.
+
+**Pontos técnicos para o slide:**
+
+* **Frontend:** React, Vite, Tailwind CSS, React Router e Lucide React.
+* **Backend:** Node.js, Express, Prisma ORM, MySQL, JWT e Bcrypt.
+* **Arquitetura:** API REST modularizada com rotas protegidas.
+* **Segurança:** autenticação JWT e autorização por perfil de usuário.
+* **Perfis:** Administrador, Instrutor e Aluno.
+* **Funcionalidades:** aulas, agendamentos, controle de vagas, presença, pagamentos simulados e dashboard.
+
+O backend expõe rotas separadas para autenticação, aluno, instrutor e administrador; o middleware valida token JWT e permissões por papel antes de liberar o acesso às funcionalidades protegidas. ([GitHub][2])
+
+**Fala para apresentação:**
+
+O SurfConnect é um sistema web full stack criado para resolver um problema real de gestão em escolas de surf. A proposta é centralizar o controle de aulas, alunos, instrutores, agendamentos e pagamentos em uma única plataforma.
+
+Tecnicamente, o projeto foi dividido entre frontend e backend. No frontend, utilizamos React com Vite, Tailwind CSS e React Router para criar uma interface moderna, responsiva e separada por tipo de usuário. No backend, usamos Node.js com Express, Prisma ORM e MySQL para construir uma API REST responsável pela autenticação, persistência dos dados e regras de negócio.
+
+Um ponto importante do sistema é o controle de acesso baseado em papéis. O administrador consegue gerenciar aulas, instrutores e métricas; o instrutor visualiza suas próprias aulas e confirma presença; e o aluno pode consultar aulas disponíveis e realizar agendamentos.
+
+O sistema também valida regras como limite de vagas por aula, impedimento de agendamento duplicado e proteção das rotas por token JWT. Além disso, possui recursos simulados de integração com Pix, WhatsApp e previsão de ondas, deixando o projeto mais próximo de um cenário real de mercado.
+
+No código, o modelo de dados usa `User`, `Class` e `Booking`, com enums para papéis, status de agendamento e status de pagamento; o controller de aulas também implementa validações como limite de vagas, agendamento duplicado e métricas administrativas simuladas. ([GitHub][3])
+
+[1]: https://github.com/guilhermegasparsimas/SurfConnect.git "GitHub - guilhermegasparsimas/SurfConnect · GitHub"
+[2]: https://raw.githubusercontent.com/guilhermegasparsimas/SurfConnect/main/backend/routes/authRoutes.js "raw.githubusercontent.com"
+[3]: https://raw.githubusercontent.com/guilhermegasparsimas/SurfConnect/main/backend/prisma/schema.prisma "raw.githubusercontent.com"
