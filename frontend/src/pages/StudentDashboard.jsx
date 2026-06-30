@@ -44,12 +44,8 @@ const StudentDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  const initiateBooking = (classId) => {
-    setTargetClassId(classId);
-    setShowConfirmModal(true);
-  };
-
-  const handleBooking = async () => {
+  const handleBooking = async (classIdToBook) => {
+    console.log('DEBUG: handleBooking called, classIdToBook:', classIdToBook);
     try {
       setShowConfirmModal(false);
       setError(null);
@@ -57,7 +53,7 @@ const StudentDashboard = () => {
       
       const res = await apiRequest('/student/bookings', {
         method: 'POST',
-        body: JSON.stringify({ classId: targetClassId })
+        body: JSON.stringify({ classId: classIdToBook })
       });
 
       setSuccessMsg(res.message || 'Aula agendada com sucesso!');

@@ -282,11 +282,13 @@ export const listAvailableClasses = async (req, res) => {
  * Student creates a booking (STUDENT)
  */
 export const createBooking = async (req, res) => {
+  console.log('DEBUG: createBooking called with body:', req.body);
   try {
     const studentId = req.user.id;
     const { classId } = req.body;
 
     if (!classId) {
+      console.log('DEBUG: Missing classId');
       return res.status(400).json({ message: 'ID da aula é obrigatório.' });
     }
 
@@ -301,12 +303,14 @@ export const createBooking = async (req, res) => {
     });
 
     if (!targetClass) {
+      console.log('DEBUG: Class not found for ID:', classId);
       return res.status(404).json({ message: 'Aula não encontrada.' });
     }
 
     // 2. Check slots availability
     const bookedCount = targetClass.bookings.length;
     if (bookedCount >= targetClass.maxStudents) {
+      console.log('DEBUG: Class full');
       return res.status(400).json({ message: 'Desculpe, esta aula já atingiu o limite de vagas.' });
     }
 
@@ -320,6 +324,7 @@ export const createBooking = async (req, res) => {
     });
 
     if (alreadyBooked) {
+      console.log('DEBUG: Student already booked');
       return res.status(400).json({ message: 'Você já está agendado para esta aula.' });
     }
 
@@ -360,6 +365,7 @@ export const createBooking = async (req, res) => {
  * List student's own booking history (STUDENT)
  */
 export const listStudentBookings = async (req, res) => {
+  console.log('DEBUG: listStudentBookings called for user:', req.user?.id);
   try {
     const studentId = req.user.id;
 
