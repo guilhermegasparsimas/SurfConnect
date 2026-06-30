@@ -41,6 +41,19 @@ const LoginRegister = () => {
     setSuccess(null);
     setSubmitting(true);
 
+    // Validação básica frontend
+    if (!email.includes('@') || !email.includes('.')) {
+      setError('Por favor, insira um e-mail válido.');
+      setSubmitting(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres.');
+      setSubmitting(false);
+      return;
+    }
+
     try {
       if (isLogin) {
         // Handle Login
@@ -56,6 +69,11 @@ const LoginRegister = () => {
 
       } else {
         // Handle Registration
+        if (!name || !telefone) {
+          setError('Nome e telefone são obrigatórios para cadastro.');
+          setSubmitting(false);
+          return;
+        }
         await register({ name, email, password, role, telefone });
         setSuccess('Cadastro realizado! Agora você já pode fazer login.');
         
@@ -68,7 +86,7 @@ const LoginRegister = () => {
         }, 2000);
       }
     } catch (err) {
-      setError(err.message || 'Ocorreu um erro no processo.');
+      setError(err.message || 'Ocorreu um erro no processo. Verifique seus dados.');
     } finally {
       setSubmitting(false);
     }

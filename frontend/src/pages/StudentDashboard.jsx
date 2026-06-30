@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useScrollDirection } from '../hooks/useScrollDirection';
 import { Waves, LogOut, CloudSun, MapPin, Calendar, User, CheckCircle2, AlertCircle, RefreshCw, X, CreditCard } from 'lucide-react';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const StudentDashboard = () => {
   const { user, logout, apiRequest } = useAuth();
@@ -15,6 +16,8 @@ const StudentDashboard = () => {
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
   const [activePixBooking, setActivePixBooking] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [targetClassId, setTargetClassId] = useState(null);
 
   const fetchDashboardData = async () => {
     try {
@@ -41,14 +44,20 @@ const StudentDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  const handleBooking = async (classId) => {
+  const initiateBooking = (classId) => {
+    setTargetClassId(classId);
+    setShowConfirmModal(true);
+  };
+
+  const handleBooking = async () => {
     try {
+      setShowConfirmModal(false);
       setError(null);
       setSuccessMsg(null);
       
       const res = await apiRequest('/student/bookings', {
         method: 'POST',
-        body: JSON.stringify({ classId })
+        body: JSON.stringify({ classId: targetClassId })
       });
 
       setSuccessMsg(res.message || 'Aula agendada com sucesso!');
@@ -65,6 +74,8 @@ const StudentDashboard = () => {
       setTimeout(() => setSuccessMsg(null), 5000);
     } catch (err) {
       setError(err.message || 'Falha ao realizar agendamento.');
+    } finally {
+      setTargetClassId(null);
     }
   };
 
@@ -194,11 +205,43 @@ const StudentDashboard = () => {
           </div>
         )}
 
+        {/* --- NOVA SEÇÃO: Próximas Aulas (Agendamentos Confirmados) --- */}
+        <section className="space-y-4">
+          <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+            🏄‍♂️ Minhas Próximas Aulas
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {bookings
+              .filter(b => b.status === 'CONFIRMED' && new Date(b.class.datetime) > new Date())
+              .sort((a, b) => new Date(a.class.datetime) - new Date(b.class.datetime))
+              .slice(0, 2)
+              .map(booking => (
+                <div key={booking.id} className="glass-card p-5 rounded-2xl bg-cyan-950/20 border border-cyan-800/50 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-cyan-500/20 p-3 rounded-xl text-cyan-400">
+                      <Calendar className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-white">{booking.class.location}</p>
+                      <p className="text-sm text-cyan-200">
+                        {new Date(booking.class.datetime).toLocaleString('pt-BR', {day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'})}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase bg-cyan-950 text-cyan-400 px-2 py-1 rounded-full border border-cyan-800/30">Confirmado</span>
+                </div>
+              ))}
+            {bookings.filter(b => b.status === 'CONFIRMED' && new Date(b.class.datetime) > new Date()).length === 0 && (
+              <p className="text-zinc-500 italic p-4">Nenhuma aula agendada para os próximos dias.</p>
+            )}
+          </div>
+        </section>
+
         {/* 2. Available Classes Schedule */}
         <section className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-2xl font-bold text-white flex items-center gap-2">
-              📅 Aulas Disponíveis
+              📅 Aulas Disponíveis para Agendar
             </h3>
             <button 
               onClick={fetchDashboardData}

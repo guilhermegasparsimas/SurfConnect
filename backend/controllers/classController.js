@@ -389,7 +389,7 @@ export const listStudentBookings = async (req, res) => {
 
 // ==========================================
 // MOCK SERVICES
-// ==========================================
+// ... (previous code)
 
 /**
  * Mock weather endpoint
@@ -411,3 +411,35 @@ export const getWeather = async (req, res) => {
     return res.status(500).json({ message: 'Erro ao carregar clima.' });
   }
 };
+
+// ==========================================
+// FEEDBACK ENDPOINTS
+// ==========================================
+
+export const createFeedback = async (req, res) => {
+  try {
+    const { message } = req.body;
+    const userId = req.user.id;
+    if (!message) return res.status(400).json({ message: 'Mensagem é obrigatória.' });
+
+    const feedback = await prisma.feedback.create({
+      data: { userId, message }
+    });
+    return res.status(201).json({ message: 'Feedback enviado!', feedback });
+  } catch (error) {
+    return res.status(500).json({ message: 'Erro ao enviar feedback.' });
+  }
+};
+
+export const listFeedbacks = async (req, res) => {
+  try {
+    const feedbacks = await prisma.feedback.findMany({
+      include: { user: { select: { name: true, email: true } } },
+      orderBy: { createdAt: 'desc' }
+    });
+    return res.status(200).json(feedbacks);
+  } catch (error) {
+    return res.status(500).json({ message: 'Erro ao listar feedbacks.' });
+  }
+};
+

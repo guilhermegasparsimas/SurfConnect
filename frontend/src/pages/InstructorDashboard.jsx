@@ -13,6 +13,7 @@ const InstructorDashboard = () => {
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
   const [actioningId, setActioningId] = useState(null);
+  const [dateFilter, setDateFilter] = useState('');
 
   const fetchInstructorClasses = async () => {
     try {
@@ -52,6 +53,24 @@ const InstructorDashboard = () => {
       setActioningId(null);
     }
   };
+
+  // Agrupamento por data
+  const groupedClasses = classes.reduce((groups, cls) => {
+    const date = new Date(cls.datetime).toLocaleDateString('pt-BR');
+    if (!groups[date]) groups[date] = [];
+    groups[date].push(cls);
+    return groups;
+  }, {});
+
+  const dates = Object.keys(groupedClasses).sort((a, b) => {
+    const dateA = new Date(a.split('/').reverse().join('-'));
+    const dateB = new Date(b.split('/').reverse().join('-'));
+    return dateA - dateB;
+  });
+
+  const filteredDates = dateFilter 
+    ? dates.filter(d => d === dateFilter) 
+    : dates;
 
   if (loading) {
     return (
@@ -151,104 +170,105 @@ const InstructorDashboard = () => {
         </div>
 
         {/* Schedule List */}
-        <div className="space-y-6">
-          {classes.length === 0 ? (
+        <div className="space-y-8">
+          {filteredDates.length === 0 ? (
             <div className="bg-zinc-950/40 border border-zinc-800 p-12 text-center rounded-2xl">
-              <p className="text-zinc-450 font-semibold text-lg">Nenhuma aula atribuída a você.</p>
-              <p className="text-zinc-500 text-sm mt-1">Fale com o Administrador para cadastrar novas aulas com o seu perfil.</p>
+              <p className="text-zinc-450 font-semibold text-lg">Nenhuma aula encontrada.</p>
             </div>
           ) : (
-            classes.map((cls) => {
-              const enrolledCount = cls.bookings.length;
+            filteredDates.map((date) => (
+              <div key={date} className="space-y-4">
+                <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-widest flex items-center gap-2">
+                  <Calendar className="w-4 h-4" /> {date}
+                </h3>
+                {groupedClasses[date].map((cls) => {
+                  const enrolledCount = cls.bookings.length;
 
-              return (
-                <div key={cls.id} className="bg-zinc-950 rounded-2xl shadow-lg border border-zinc-800 overflow-hidden">
-                  
-                  {/* Class Banner Info */}
-                  <div className="bg-zinc-900/60 border-b border-zinc-900 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
-                        <MapPin className="w-4 h-4 text-cyan-400" />
-                        {cls.location}
-                      </h3>
-                      <p className="text-sm text-zinc-450 flex items-center gap-1.5">
-                        <Calendar className="w-4 h-4 text-zinc-500" />
-                        {new Date(cls.datetime).toLocaleString('pt-BR', {
-                          weekday: 'long',
-                          day: 'numeric',
-                          month: 'long',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </p>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 bg-zinc-950 px-4 py-2 rounded-xl border border-zinc-850 self-start sm:self-auto text-zinc-400">
-                      <Users className="w-4 h-4 text-zinc-500" />
-                      <span className="text-sm font-semibold">
-                        {enrolledCount} de {cls.maxStudents} alunos matriculados
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Enrolled Students list */}
-                  <div className="p-6">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-4">Lista de Alunos</h4>
-                    
-                    {enrolledCount === 0 ? (
-                      <p className="text-zinc-500 text-sm italic">Nenhum aluno agendado para esta aula até o momento.</p>
-                    ) : (
-                      <div className="divide-y divide-zinc-900">
-                        {cls.bookings.map((booking) => (
-                          <div 
-                            key={booking.id} 
-                            className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 first:pt-0 last:pb-0"
-                          >
-                            <div className="space-y-1">
-                              <p className="font-bold text-white">{booking.student.name}</p>
-                              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-400">
-                                <span>{booking.student.email}</span>
-                                <span className="flex items-center gap-1 text-zinc-500">
-                                  <Phone className="w-3.5 h-3.5" />
-                                  {booking.student.telefone}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-3">
-                              {/* Payment status badge inside instructor panel */}
-                              <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${
-                                booking.paymentStatus === 'PAID' 
-                                  ? 'bg-emerald-950/50 text-emerald-400 border-emerald-800/40' 
-                                  : 'bg-amber-950/50 text-amber-400 border-amber-800/40'
-                              }`}>
-                                {booking.paymentStatus === 'PAID' ? 'Pago' : 'Pendente'}
-                              </span>
-
-                              {booking.paymentStatus === 'PAID' ? (
-                                <span className="px-3 py-1.5 bg-emerald-950/50 text-emerald-400 border border-emerald-800/30 font-bold text-xs rounded-xl flex items-center gap-1.5">
-                                  <Check className="w-4 h-4" /> Presença Confirmada
-                                </span>
-                              ) : (
-                                <button
-                                  onClick={() => handleMarkAttendance(booking.id)}
-                                  disabled={actioningId === booking.id}
-                                  className="px-3.5 py-1.5 bg-cyan-500 hover:bg-cyan-600 text-zinc-950 font-bold text-xs rounded-xl shadow-md transition-all duration-300 cursor-pointer disabled:opacity-50 flex items-center gap-1"
-                                >
-                                  <UserCheck className="w-3.5 h-3.5" />
-                                  {actioningId === booking.id ? 'Marcando...' : 'Marcar Presença'}
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        ))}
+                  return (
+                    <div key={cls.id} className="bg-zinc-950 rounded-2xl shadow-lg border border-zinc-800 overflow-hidden">
+                      
+                      {/* Class Banner Info */}
+                      <div className="bg-zinc-900/60 border-b border-zinc-900 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="space-y-1">
+                          <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
+                            <MapPin className="w-4 h-4 text-cyan-400" />
+                            {cls.location}
+                          </h3>
+                          <p className="text-sm text-zinc-450 flex items-center gap-1.5">
+                            <span className="font-semibold text-zinc-300">
+                              {new Date(cls.datetime).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}
+                            </span>
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 bg-zinc-950 px-4 py-2 rounded-xl border border-zinc-850 self-start sm:self-auto text-zinc-400">
+                          <Users className="w-4 h-4 text-zinc-500" />
+                          <span className="text-sm font-semibold">
+                            {enrolledCount} de {cls.maxStudents} alunos
+                          </span>
+                        </div>
                       </div>
-                    )}
-                  </div>
 
-                </div>
-              );
-            })
+                      {/* Enrolled Students list */}
+                      <div className="p-6">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-4">Lista de Alunos</h4>
+                        
+                        {enrolledCount === 0 ? (
+                          <p className="text-zinc-500 text-sm italic">Nenhum aluno agendado.</p>
+                        ) : (
+                          <div className="divide-y divide-zinc-900">
+                            {cls.bookings.map((booking) => (
+                              <div 
+                                key={booking.id} 
+                                className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 first:pt-0 last:pb-0"
+                              >
+                                <div className="space-y-1">
+                                  <p className="font-bold text-white">{booking.student.name}</p>
+                                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-400">
+                                    <span>{booking.student.email}</span>
+                                    <span className="flex items-center gap-1 text-zinc-500">
+                                      <Phone className="w-3.5 h-3.5" />
+                                      {booking.student.telefone}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                  {/* Payment status badge inside instructor panel */}
+                                  <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${
+                                    booking.paymentStatus === 'PAID' 
+                                      ? 'bg-emerald-950/50 text-emerald-400 border-emerald-800/40' 
+                                      : 'bg-amber-950/50 text-amber-400 border-amber-800/40'
+                                  }`}>
+                                    {booking.paymentStatus === 'PAID' ? 'Pago' : 'Pendente'}
+                                  </span>
+
+                                  {booking.paymentStatus === 'PAID' ? (
+                                    <span className="px-3 py-1.5 bg-emerald-950/50 text-emerald-400 border border-emerald-800/30 font-bold text-xs rounded-xl flex items-center gap-1.5">
+                                      <Check className="w-4 h-4" /> Presença Confirmada
+                                    </span>
+                                  ) : (
+                                    <button
+                                      onClick={() => handleMarkAttendance(booking.id)}
+                                      disabled={actioningId === booking.id}
+                                      className="px-3.5 py-1.5 bg-cyan-500 hover:bg-cyan-600 text-zinc-950 font-bold text-xs rounded-xl shadow-md transition-all duration-300 cursor-pointer disabled:opacity-50 flex items-center gap-1"
+                                    >
+                                      <UserCheck className="w-3.5 h-3.5" />
+                                      {actioningId === booking.id ? 'Marcando...' : 'Marcar Presença'}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                    </div>
+                  );
+                })}
+              </div>
+            ))
           )}
         </div>
       </main>

@@ -95,6 +95,26 @@ O sistema possui três níveis de permissão:
 - **Previsão de Ondas**: Dashboard do aluno com resumo de condições do mar (Mock API).
 - **Segurança**: Rotas protegidas por middleware de autenticação e verificação de cargo.
 
+## 📡 API Endpoints (Principais)
+
+### Autenticação
+- `POST /api/auth/register`: Criação de usuário.
+- `POST /api/auth/login`: Autenticação e recebimento de JWT.
+
+### Aluno
+- `GET /api/student/classes`: Lista aulas disponíveis.
+- `GET /api/student/bookings`: Histórico de agendamentos.
+- `POST /api/student/bookings`: Realiza novo agendamento.
+
+### Instrutor
+- `GET /api/instructor/classes`: Aulas atribuídas ao instrutor.
+- `POST /api/instructor/attendance`: Confirma presença de aluno.
+
+### Admin
+- `GET /api/admin/metrics`: Dados do dashboard administrativo.
+- `GET /api/admin/classes`: Lista todas as aulas.
+- `POST /api/admin/classes`: Cria nova aula.
+
 ---
 
 ## 📄 Licença

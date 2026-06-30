@@ -10,7 +10,9 @@ import {
   listAvailableClasses,
   createBooking,
   getWeather,
-  listStudentBookings
+  listStudentBookings,
+  createFeedback,
+  listFeedbacks
 } from '../controllers/classController.js';
 import { authenticateToken, checkRole } from '../middlewares/authMiddleware.js';
 
@@ -18,6 +20,10 @@ const router = express.Router();
 
 // Weather - Public/Authenticated but general
 router.get('/weather', authenticateToken, getWeather);
+
+// FEEDBACK routes
+router.post('/feedback', authenticateToken, createFeedback);
+router.get('/admin/feedbacks', authenticateToken, checkRole(['ADMIN']), listFeedbacks);
 
 // STUDENT routes
 router.get('/student/classes', authenticateToken, checkRole(['STUDENT']), listAvailableClasses);
